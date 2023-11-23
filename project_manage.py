@@ -1,33 +1,52 @@
 # import database module
 
-# define a funcion called initializing
+# define a function called initializing
+
+import csv
+from database import Table, Database
+
+database = Database()
+
+
+def data_file(f):
+    with open(f) as variable:
+        old_data = []
+        for data in csv.DictReader(variable):
+            old_data.append(data)
+        return old_data
+
 
 def initializing():
-    pass
+    table = Table('persons', data_file('persons.csv'))
+    table2 = Table('login', data_file('login.csv'))
+    database.insert(table)
+    database.insert(table2)
 
-# here are things to do in this function:
-
-    # create an object to read all csv files that will serve as a persistent state for this program
-
-    # create all the corresponding tables for those csv files
-
-    # see the guide how many tables are needed
-
-    # add all these tables to the database
-
-
-# define a funcion called login
 
 def login():
-    pass
+    user_name = input("Please enter your user name: ")
+    passw = input("Please enter your password: ")
+    for name in data_file('login.csv'):
+        if user_name in name.values() and passw in name.values():
+            return [name['ID'], name['role']]
+    return None
 
-# here are things to do in this function:
-   # add code that performs a login task
-        # ask a user for a username and password
-        # returns [ID, role] if valid, otherwise returning None
 
-# define a function called exit
-def exit():
+def exit(f):
+    new_data = []
+    with open(f, mode='w') as variable:
+        x = database.search('person').table.index(0)
+        csv_reader = csv.writer(variable)
+        csv_reader.writerow(x.keys())
+        for data in database.search('person').table:
+            csv_reader.writerow(data.values())
+
+    """
+    
+    open file name with wrtie mode
+        loop table to get all element
+        writerows()
+    """
     pass
 
 # here are things to do in this function:
@@ -41,7 +60,7 @@ def exit():
 
 initializing()
 val = login()
-
+print(val)
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
 # if val[1] = 'admin':
