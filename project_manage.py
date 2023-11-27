@@ -77,4 +77,4 @@ print(val)
     # see and do advisor related activities
 
 # once everyhthing is done, make a call to the exit function
-exit()
+exit('f')

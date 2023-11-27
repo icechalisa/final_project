@@ -76,7 +76,6 @@ class Table:
     def update(self, column, id, value):
         filtered_table = Table(self.table_name + '_filtered', [])
         for item1 in self.table:
-            # condition ID match
             if item1['ID'] == id:
                 item1[column] = value
         return filtered_table
@@ -84,10 +83,3 @@ class Table:
     def __str__(self):
         return self.table_name + ':' + str(self.table)
 
-# add in code for a Database class
-
-# add in code for a Table class
-
-# modify the code in the Table class so that it supports the insert operation where an entry can be added to a list of dictionary
-
-# modify the code in the Table class so that it supports the update operation where an entry's value associated with a key can be updated
