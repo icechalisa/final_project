@@ -4,6 +4,7 @@
 
 import csv
 from database import Table, Database
+import os
 
 database = Database()
 
@@ -19,6 +20,7 @@ def data_file(f):
 def initializing():
     table = Table('persons', data_file('persons.csv'))
     table2 = Table('login', data_file('login.csv'))
+    print('tabke', table)
     database.insert(table)
     database.insert(table2)
 
@@ -35,19 +37,11 @@ def login():
 def exit(f):
     new_data = []
     with open(f, mode='w') as variable:
-        x = database.search('person').table.index(0)
+        x = database.search('persons').table
         csv_reader = csv.writer(variable)
-        csv_reader.writerow(x.keys())
-        for data in database.search('person').table:
+        csv_reader.writerow(x[0].keys())
+        for data in x:
             csv_reader.writerow(data.values())
-
-    """
-    
-    open file name with wrtie mode
-        loop table to get all element
-        writerows()
-    """
-    pass
 
 # here are things to do in this function:
    # write out all the tables that have been modified to the corresponding csv files
@@ -77,4 +71,4 @@ print(val)
     # see and do advisor related activities
 
 # once everyhthing is done, make a call to the exit function
-exit('f')
+exit('persons.csv')
