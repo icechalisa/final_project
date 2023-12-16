@@ -5,13 +5,6 @@ import csv, os
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-# persons = []
-# with open(os.path.join(__location__, 'persons.csv')) as f:
-#     rows = csv.DictReader(f)
-#     for r in rows:
-#         persons.append(dict(r))
-
-
 class Database:
     def __init__(self):
         self.database = []
@@ -74,9 +67,13 @@ class Table:
 
     def update(self, column, id, value):
         filtered_table = Table(self.table_name + '_filtered', [])
-        for item1 in self.table:
-            if item1['ID'] == id:
-                item1[column] = value
+        with open(os.path.join(__location__, self.table_name + '.csv'), mode='w') as variable:
+            csv_reader = csv.writer(variable)
+            csv_reader.writerow(self.table[0].keys())
+            for data in self.table:
+                if data['ID'] == id:
+                    data[column] = value
+                csv_reader.writerow(data.values())
         return filtered_table
 
     def __str__(self):

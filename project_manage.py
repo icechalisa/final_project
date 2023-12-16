@@ -20,7 +20,7 @@ def data_file(f):
 def initializing():
     table = Table('persons', data_file('persons.csv'))
     table2 = Table('login', data_file('login.csv'))
-    print('tabke', table)
+    print('table', table)
     database.insert(table)
     database.insert(table2)
 
@@ -57,8 +57,11 @@ val = login()
 print(val)
 # based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
-# if val[1] = 'admin':
-    # see and do admin related activities
+if val[1] == 'admin':
+    from admin import Admin
+    admin = Admin(database)
+    admin.display_choice()
+    #see and do admin related activities
 # elif val[1] = 'student':
     # see and do student related activities
 # elif val[1] = 'member':
