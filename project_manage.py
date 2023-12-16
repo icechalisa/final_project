@@ -20,9 +20,15 @@ def data_file(f):
 def initializing():
     table = Table('persons', data_file('persons.csv'))
     table2 = Table('login', data_file('login.csv'))
+    table3 = Table('project', data_file('project.csv'))
+    table4 = Table('advisor-request', data_file('advisor-request.csv'))
+    table5 = Table('member-request', data_file('member-request.csv'))
     print('table', table)
     database.insert(table)
     database.insert(table2)
+    database.insert(table3)
+    database.insert(table4)
+    database.insert(table5)
 
 
 def login():
