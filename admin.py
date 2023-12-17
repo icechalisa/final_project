@@ -18,6 +18,7 @@ class Admin:
 
     def display_choice(self):
         while True:
+            print('-----Welcome to admin page-----')
             print("1. Update a person's information")
             print("2. Update a project's information")
             print("3. Update a login's information")
@@ -38,7 +39,6 @@ class Admin:
                 break
 
     def display_input(self, file, table):
-        # Input correct column na
         self.column = input("Please enter the column name: ")
         while True:
             if self.column in table.table[0].keys():
@@ -63,8 +63,6 @@ class Admin:
 
     def update_information(self, choice):
         if choice == 1:
-            # Check data that have correct
-            # check column
             print('Table person', self.person.table)
             if self.column in self.person.table[0].keys():
                 self.person.update(
@@ -132,4 +130,5 @@ class Admin:
         else:
             print("Choice is not exist")
             return False
+
 

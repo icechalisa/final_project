@@ -67,13 +67,9 @@ class Table:
 
     def update(self, column, id, value):
         filtered_table = Table(self.table_name + '_filtered', [])
-        with open(os.path.join(__location__, self.table_name + '.csv'), mode='w') as variable:
-            csv_reader = csv.writer(variable)
-            csv_reader.writerow(self.table[0].keys())
-            for data in self.table:
-                if data['ID'] == id:
-                    data[column] = value
-                csv_reader.writerow(data.values())
+        for data in self.table:
+            if data['ID'] == id:
+                data[column] = value
         return filtered_table
 
     def __str__(self):

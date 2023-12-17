@@ -70,7 +70,10 @@ if val[1] == 'admin':
     #see and do admin related activities
 # elif val[1] = 'student':
     # see and do student related activities
-# elif val[1] = 'member':
+elif val[1] == 'member':
+    from member import Member
+    member = Member(database, val[0])
+    member.display_choice()
     # see and do member related activities
 # elif val[1] = 'lead':
     # see and do lead related activities
