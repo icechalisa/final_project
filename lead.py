@@ -1,14 +1,21 @@
 from database import Table
 
+
 class LeadStudent:
 
-    def __init__(self, database):
+    def __init__(self, database, person_id):
         self.id_list = None
-        self.person_id = None
+        self.person_id = person_id
         self.persons: Table = database.search('persons')
         self.project: Table = database.search('project')
         self.member_request: Table = database.search('member-request')
         self.advisor_request: Table = database.search('advisor-request')
+
+    def find_project(self):
+        name = self.check_member_name()
+        for project in self.project.table:
+            if name == project['Lead']:
+                return project['ID']
 
     def check_member_name(self):
         for person in self.persons.table:
@@ -23,8 +30,9 @@ class LeadStudent:
 
     def check_response(self):
         requests = []
+        project_id = self.find_project()
         for request in self.member_request.table:
-            if self.check_member_name() == request['to_be_member']:
+            if project_id == request['ID']:
                 requests.append(request)
         return requests
 
@@ -81,13 +89,15 @@ class LeadStudent:
                 print('')
             elif choice == 5:
                 print('-----Create a project-----')
-                self.create_project(self.project.table)
+                self.project = self.create_project()
+                print('Your project: ', self.project.table)
                 print('')
             elif choice == 6:
-                print('-----Find members-----')
-                print('Students who can be a member: ')
+                print('-----Find your members-----')
                 self.find_members()
                 print('')
+            elif choice == 7:
+                self.add_members_to_project()
 
     def display_input(self, file, table, my_project):
         while True:
@@ -124,15 +134,16 @@ class LeadStudent:
         else:
             print("Column is not exist")
             return False
+
     def create_project(self):
         project_details = {
             'ID': str(len(self.project.table) + 1),
             'Title': input('Please enter the title: '),
-            'Lead': input('Please enter your name: '),
-            'Member1': input('Please enter the first member: '),
-            'Member2': input('Please enter the second member: '),
-            'Advisor': input('Please enter the advisor: '),
-            'Status': input('Please enter the status: ')
+            'Lead': self.check_member_name(),
+            'Member1': '',
+            'Member2': '',
+            'Advisor': '',
+            'Status': 'Planned',
         }
         self.project.insert(project_details)
         return self.project
@@ -154,19 +165,42 @@ class LeadStudent:
             }
             self.member_request.insert(invitation_data)
 
-    def add_members_to_project(self, project_id, member_ids):
+    def add_members_to_project(self):
         # Assume member_ids is a list of member IDs to be added to the project
         # Add members to the project, update the project table, etc.
         # ...
+        # is_full = False
+        # for response in self.member_request.table:
+        #     if response['Response'] == 'Approved':
+        #         if 'Member1' in response and response['Member1'] == '':
+        #             self.project.update(column='Member1', id=response['project_id'], value=response['to_be_member'])
+        #             print("Member1 added successfully.")
+        #             is_full = True
+        #         elif 'Member2' in response and response['Member2'] == '':
+        #             self.project.update(column='Member2', id=response['project_id'], value=response['to_be_member'])
+        #             print("Member2 added successfully.")
+        #             is_full = True
+        #
+        # if not is_full:
+        #     print("Project is already full. Cannot add more members.")
+        #     print("-" * 25)
+        for response in self.member_request.table:
+            if response['Response'] == 'Approved':
+                member1 = response.get('Member1', '')
+                member2 = response.get('Member2', '')
 
+                if member1 == '':
+                    self.project.update(column='Member1', id=response['ID'], value=response['to_be_member'])
+                    print("Member1 added successfully.")
+                    break  # Break the loop after adding one member
 
-    def see_and_modify_project_details(self, project_id):
-        # Retrieve and display project details
-        project_details = self.project.find_by_id(project_id)
-        print("Current Project Details:", project_details)
+                elif member2 == '':
+                    self.project.update(column='Member2', id=response['ID'], value=response['to_be_member'])
+                    print("Member2 added successfully.")
+                    break  # Break the loop after adding one member
 
-        # Logic to modify project details
-        # ...
+        else:
+            print("Project is already full. Cannot add more members.")
 
     def send_request_to_advisors(self, project_id, advisor_ids):
         # Assume advisor_ids is a list of advisor IDs to whom requests are sent
