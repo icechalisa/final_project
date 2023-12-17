@@ -1,4 +1,3 @@
-from database import Database
 from database import Table
 
 
@@ -15,13 +14,13 @@ class Member:
         self.member_request: Table = database.search('member-request')
         self.person_id = _id
 
-    def check_member_name(self):
-        for person in self.persons.table:
-            if self.person_id == person['ID']:
-                return person['first'] + ' ' + person['last']
+    # def check_member_name(self):
+    #     for person in self.persons.table:
+    #         if self.person_id == person['ID']:
+    #             return person['first'] + ' ' + person['last']
 
     def check_status(self):
-        check_name = self.check_member_name()
+        check_name = self.person_id
         for project in self.project.table:
             if check_name in project.values():
                 print(f'-{project["Title"]}: {project["Status"]}')
@@ -29,13 +28,13 @@ class Member:
     def check_response(self):
         requests = []
         for request in self.member_request.table:
-            if self.check_member_name() == request['to_be_member']:
+            if self.person_id == request['to_be_member']:
                 requests.append(request)
         return requests
 
     def display_project(self):
         self.id_list = []
-        check_name = self.check_member_name()
+        check_name = self.person_id
         for project in self.project.table:
             if check_name in project.values():
                 self.id_list.append(project['ID'])
@@ -61,7 +60,7 @@ class Member:
                 print('-----Update project information-----')
                 # choice = int(input('Please choose your project: '))
                 self.id_list = []
-                check_name = self.check_member_name()
+                check_name = self.person_id
                 self.my_project = []
                 n = 1
                 for project in self.project.table:

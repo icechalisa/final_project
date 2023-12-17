@@ -75,12 +75,16 @@ elif val[1] == 'member':
     member = Member(database, val[0])
     member.display_choice()
     # see and do member related activities
-# elif val[1] = 'lead':
+elif val[1] == 'lead':
+    from lead import LeadStudent
+    lead = LeadStudent(database, val[0])
+    lead.display_choice()
     # see and do lead related activities
 # elif val[1] = 'faculty':
     # see and do faculty related activities
 # elif val[1] = 'advisor':
     # see and do advisor related activities
-
+for i in database.database:
+    print(i.table_name, i.table)
 # once everyhthing is done, make a call to the exit function
 exit('persons.csv')

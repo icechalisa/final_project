@@ -1,9 +1,10 @@
 from database import Table
-
+from datetime import datetime
 
 class LeadStudent:
 
     def __init__(self, database, person_id):
+        self.potential_members = None
         self.id_list = None
         self.person_id = person_id
         self.persons: Table = database.search('persons')
@@ -12,33 +13,36 @@ class LeadStudent:
         self.advisor_request: Table = database.search('advisor-request')
 
     def find_project(self):
-        name = self.check_member_name()
+        name = self.person_id
         for project in self.project.table:
             if name == project['Lead']:
                 return project['ID']
 
-    def check_member_name(self):
+    def check_member_name(self,id_):
         for person in self.persons.table:
-            if self.person_id == person['ID']:
+            if id_ == person['ID']:
                 return person['first'] + ' ' + person['last']
 
     def check_status(self):
-        check_name = self.check_member_name()
         for project in self.project.table:
-            if check_name in project.values():
+            if self.person_id in project.values():
                 print(f'-{project["Title"]}: {project["Status"]}')
 
     def check_response(self):
-        requests = []
+        member_requests = []
+        advisor_requests = []
         project_id = self.find_project()
         for request in self.member_request.table:
-            if project_id == request['ID']:
-                requests.append(request)
-        return requests
+            if project_id == request['ID'] and request['Response'] == 'Accepted':
+                member_requests.append(request)
+        for request in self.advisor_request.table:
+            if project_id == request['ID'] and request['Response'] == 'Accepted':
+                advisor_requests.append(request)
+        return member_requests, advisor_requests
 
     def display_project(self):
         self.id_list = []
-        check_name = self.check_member_name()
+        check_name = self.person_id
         for project in self.project.table:
             if check_name in project.values():
                 self.id_list.append(project['ID'])
@@ -49,14 +53,15 @@ class LeadStudent:
             print("1. Project's status")
             print("2. Display a project's information")
             print("3. Update a project's information")
-            print("4. All requests")
+            print("4. All of your requests response")
             print("5. Create a project")
             print("6. Find members")
             print("7. Add members to project")
-            print("8. Send a request to students")
-            print("9. Send a request to faculty")
-            print("10. Submit final project report")
-            print("11. Exit")
+            print("8. ADD advisor to project")
+            print("9. Send a request to students")
+            print("10. Send a request to faculty")
+            print("11. Submit final project report")
+            print("12. Exit")
             choice = int(input("Please enter your choice: "))
             if choice == 1:
                 print('-----Project status-----')
@@ -69,7 +74,7 @@ class LeadStudent:
             elif choice == 3:
                 print('-----Update project information-----')
                 self.id_list = []
-                check_name = self.check_member_name()
+                check_name = self.person_id
                 self.my_project = []
                 n = 1
                 for project in self.project.table:
@@ -84,13 +89,21 @@ class LeadStudent:
                 print('')
             elif choice == 4:
                 print('-----All requests-----')
-                for request in self.check_response():
-                    print('Your request: ', request['ID'] + ' ' + request['Response'] + ' ' + request['Response_date'])
+                mem_response_list,advi_response_list = self.check_response()
+                if mem_response_list == [] and advi_response_list == []:
+                    print('You have no response')
+                else:
+                    for request in mem_response_list:
+                        print('Your member request has response: ID.',request['ID'] + ' ' + request['Response'] + ' '
+                              + request['Response_date'])
+                    for request in advi_response_list:
+                        print('Your advisor request has response: ID.',request['ID'] + ' ' + request['Response'] + ' '
+                              + request['Response_date'])
                 print('')
             elif choice == 5:
                 print('-----Create a project-----')
-                self.project = self.create_project()
-                print('Your project: ', self.project.table)
+                project = self.create_project()
+                print('Your project: ID.', project['ID'] + ' ' + project['Title'] + ' ' + project['Status'])
                 print('')
             elif choice == 6:
                 print('-----Find your members-----')
@@ -98,6 +111,22 @@ class LeadStudent:
                 print('')
             elif choice == 7:
                 self.add_members_to_project()
+            elif choice == 8:
+                self.add_advisor_to_project()
+            elif choice == 9:
+                print('-----Send a request to students-----')
+                self.send_invitations()
+                print('')
+            elif choice == 10:
+                print('-----Send a request to faculty-----')
+                self.send_request_to_advisors()
+                print('')
+            elif choice == 11:
+                print('-----Submit final project report-----')
+                self.submit_final_project_report()
+                print('')
+            elif choice == 12:
+                break
 
     def display_input(self, file, table, my_project):
         while True:
@@ -139,81 +168,204 @@ class LeadStudent:
         project_details = {
             'ID': str(len(self.project.table) + 1),
             'Title': input('Please enter the title: '),
-            'Lead': self.check_member_name(),
+            'Lead': self.person_id,
             'Member1': '',
             'Member2': '',
             'Advisor': '',
-            'Status': 'Planned',
+            'Status': 'In Progress',
         }
         self.project.insert(project_details)
-        return self.project
+        return project_details
 
     def find_members(self):
         # Logic to find potential members, e.g., searching through a user table
-        check_student = self.check_member_name()
+        check_student = self.person_id
         for project in self.project.table:
             if check_student in project.values():
-                print(project['ID'] + ' ' + project['Member1'] + ' ' + project['Member2'])
+                print(f'ID:{project["ID"]}   {self.check_member_name(project["Member1"])}   '
+                      f'{self.check_member_name(project["Member2"])}')
 
-    def send_invitations(self, project_id, potential_members):
-        # Assume potential_members is a list of member IDs
-        for member_id in potential_members:
-            invitation_data = {
-                'project_id': project_id,
-                'member_id': member_id,
-                'status': 'pending'  # Invitation status
-            }
-            self.member_request.insert(invitation_data)
+    def send_invitations(self):
+        project_id = self.find_project()
+        if self.project.filter(lambda x: x['ID'] == project_id).table[0]['Member1'] != '' \
+                and self.project.filter(lambda x: x['ID'] == project_id).table[0]['Member2'] != '':
+            print('Project is already full. Cannot send the invitation.')
+            print('')
+        while True:
+            choice = input('Do you want to send a request to students (Y/N): ').upper()
+            if choice == 'Y':
+                for person in self.persons.table:
+                    if person['type'] == 'student':
+                        member_requests = {
+                            'ID': project_id,
+                            'to_be_member': person['ID'],
+                            'Response': 'Pending',
+                            'Response_date': datetime.today().date(),
+                        }
+                        self.member_request.insert(member_requests)
+                print('----Your invitations have been sent----')
+                print('')
+                break
+            elif choice == 'N':
+                print('----Your invitations have not been sent----')
+                print('')
+                break
+            else:
+                print('Invalid choice. Please enter Y or N')
+                print('--------------------------------')
 
     def add_members_to_project(self):
-        # Assume member_ids is a list of member IDs to be added to the project
-        # Add members to the project, update the project table, etc.
-        # ...
-        # is_full = False
-        # for response in self.member_request.table:
-        #     if response['Response'] == 'Approved':
-        #         if 'Member1' in response and response['Member1'] == '':
-        #             self.project.update(column='Member1', id=response['project_id'], value=response['to_be_member'])
-        #             print("Member1 added successfully.")
-        #             is_full = True
-        #         elif 'Member2' in response and response['Member2'] == '':
-        #             self.project.update(column='Member2', id=response['project_id'], value=response['to_be_member'])
-        #             print("Member2 added successfully.")
-        #             is_full = True
-        #
-        # if not is_full:
-        #     print("Project is already full. Cannot add more members.")
-        #     print("-" * 25)
-        for response in self.member_request.table:
-            if response['Response'] == 'Approved':
-                member1 = response.get('Member1', '')
-                member2 = response.get('Member2', '')
+        requests = []
+        project_id = self.find_project()
+        for request in self.member_request.table:
+            if project_id == request['ID'] and request['Response'] == 'Accepted':
+                requests.append(request)
+        if requests == []:
+            print('***You have no response***')
+            print('')
+            return
+        while True:
+            n = 1
+            for student in requests:
+                print(f'{n}. ID: {student["ID"]} {self.check_member_name(student["to_be_member"])}')
+                n += 1
+            accept = input('Do you want to accept (A) or deny (D) these requests? ').upper()
+            if requests == []:
+                print('***You have no response***')
+                print('')
+                break
+            print('(Or enter Q to quit)')
+            if accept == 'A':
+                choice = int(input('Please select your choice: '))
+                if 0 < choice <= len(requests):
+                    if self.project.filter(lambda x: x['ID'] == project_id).table[0]['Member1'] == '':
+                        self.project.update(column='Member1', id=project_id, value=requests[choice - 1]['to_be_member'])
+                        print('Your member has been added in member1')
+                        requests.pop(choice - 1)
+                    elif self.project.filter(lambda x: x['ID'] == project_id).table[0]['Member2'] == '':
+                        self.project.update(column='Member2', id=project_id, value=requests[choice - 1]['to_be_member'])
+                        print('Your member has been added in member2')
+                        requests.pop(choice - 1)
+                    else:
+                        print('Project is already full. Cannot accept the invitation.')
+                elif choice == 'Q':
+                    break
+                else:
+                    print('Please choose your member again')
+            elif accept == 'D':
+                choice = int(input('Please select your choice: '))
+                if 0 < choice <= len(requests):
+                    requests.pop(choice - 1)
+                    print('Your member has been denied')
+                break
+            else:
+                print('Invalid choice. Please enter A or D')
+                print('--------------------------------')
 
-                if member1 == '':
-                    self.project.update(column='Member1', id=response['ID'], value=response['to_be_member'])
-                    print("Member1 added successfully.")
-                    break  # Break the loop after adding one member
+    def add_advisor_to_project(self):
+        requests = []
+        project_id = self.find_project()
+        for request in self.advisor_request.table:
+            if project_id == request['ID'] and request['Response'] == 'Accepted':
+                requests.append(request)
+        if requests == []:
+            print('***You have no response***')
+            print('')
+            return
+        while True:
+            n = 1
+            for faculty in requests:
+                print(f'{n}. ID: {faculty["ID"]} {self.check_member_name(faculty["to_be_member"])}')
+                n += 1
+            accept = input('Do you want to accept (A) or deny (D) these requests? ').upper()
+            if requests == []:
+                print('***You have no response***')
+                print('')
+                break
+            print('(Or enter Q to quit)')
+            if accept == 'A':
+                choice = int(input('Please select your choice: '))
+                if 0 < choice <= len(requests):
+                    if self.project.filter(lambda x: x['ID'] == project_id).table[0]['Advisor'] == '':
+                        self.project.update(column='Advisor', id=project_id, value=requests[choice - 1]['to_be_advisor'])
+                        print('Your advisor has been added in a project')
+                        requests.pop(choice - 1)
+                    else:
+                        print('Project is already full. Cannot accept the invitation.')
+                elif choice == 'Q':
+                    break
+                else:
+                    print('Please choose your advisor again')
+            elif accept == 'D':
+                choice = int(input('Please select your choice: '))
+                if 0 < choice <= len(requests):
+                    requests.pop(choice - 1)
+                    print('Your advisor has been denied')
+                break
+            else:
+                print('Invalid choice. Please enter A or D')
+                print('--------------------------------')
 
-                elif member2 == '':
-                    self.project.update(column='Member2', id=response['ID'], value=response['to_be_member'])
-                    print("Member2 added successfully.")
-                    break  # Break the loop after adding one member
+    def send_request_to_advisors(self):
+        project_id = self.find_project()
+        if self.project.filter(lambda x: x['ID'] == project_id).table[0]['Advisor'] != '':
+            print('This project already has an advisor. Cannot send the invitation.')
+            print('')
+        while True:
+            choice = input('Do you want to send a request to faculty(Y/N): ').upper()
+            if choice == 'Y':
+                for person in self.persons.table:
+                    if person['type'] == 'faculty':
+                        faculty_requests = {
+                            'ID': project_id,
+                            'to_be_advisor': person['ID'],
+                            'Response': 'Pending',
+                            'Response_date': datetime.today().date(),
+                        }
+                        self.advisor_request.insert(faculty_requests)
+                print('----Your invitations have been sent----')
+                print('')
+                break
+            elif choice == 'N':
+                print('----Your invitations have not been sent----')
+                print('')
+                break
+            else:
+                print('Invalid choice. Please enter Y or N')
+                print('--------------------------------')
 
-        else:
-            print("Project is already full. Cannot add more members.")
+    def submit_final_project_report(self):
+        while True:
+            choice = input('Do you want to submit a final project report(Y/N): ').upper()
+            if choice == 'Y':
+                project_complete = []
+                for project in self.project.table:
+                    n = 1
+                    if self.person_id in project['Lead']:
+                        if project['Status'] == 'Completed':
+                            print(f'{n} ID:{project["ID"]} {project["Title"]}')
+                            n += 1
+                            project_complete.append(project)
+                if project_complete == []:
+                    print('You have no project completed')
+                    print('')
+                    break
+                while True:
+                    choice = int(input('Please choose your project: '))
+                    if 0 < choice <= len(project_complete):
+                        self.project.update(column='Status', id=project_complete[choice - 1]['ID'], value='Submitted')
+                        print('Your project has been submitted')
+                        break
+                    else:
+                        print('Please choose your project again')
+                        print('--------------------------------')
+                break
+            elif choice == 'N':
+                print('----Your report has not been sent----')
+                print('')
+                break
+            else:
+                print('Invalid choice. Please enter Y or N')
+                print('--------------------------------')
 
-    def send_request_to_advisors(self, project_id, advisor_ids):
-        # Assume advisor_ids is a list of advisor IDs to whom requests are sent
-        for advisor_id in advisor_ids:
-            request_data = {
-                'project_id': project_id,
-                'advisor_id': advisor_id,
-                'status': 'pending'  # Request status
-            }
-            self.advisor_request.insert(request_data)
 
-    def submit_final_project_report(self, project_id, report_data):
-        # Assume report_data is a dictionary containing the final project report
-        # Update the project table with the final report
-        self.project.update(column='report', id=project_id, value=report_data)
-        print("Final project report submitted successfully.")
