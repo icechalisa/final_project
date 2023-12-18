@@ -83,8 +83,7 @@ elif val[1] == 'faculty':
     from faculty import Faculty
     faculty = Faculty(database, val[0])
     faculty.display_choice()
-# elif val[1] = 'advisor':
-    # see and do advisor related activities
+elif val[1] = 'advisor':
 for i in database.database:
     print(i.table_name, i.table)
 # once everyhthing is done, make a call to the exit function
