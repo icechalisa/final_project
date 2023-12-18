@@ -14,11 +14,6 @@ class Member:
         self.member_request: Table = database.search('member-request')
         self.person_id = _id
 
-    # def check_member_name(self):
-    #     for person in self.persons.table:
-    #         if self.person_id == person['ID']:
-    #             return person['first'] + ' ' + person['last']
-
     def check_status(self):
         check_name = self.person_id
         for project in self.project.table:
