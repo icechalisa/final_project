@@ -4,7 +4,6 @@
 
 import csv
 from database import Table, Database
-import os
 
 database = Database()
 
@@ -91,4 +90,5 @@ for i in database.database:
     print(i.table_name, i.table)
 # once everyhthing is done, make a call to the exit function
 exit()
+
 

@@ -5,6 +5,7 @@ from datetime import datetime
 class Faculty:
 
     def __init__(self, database, person_id):
+        self.login = None
         self.persons = None
         self.person_id = person_id
         self.project: Table = database.search('project')
@@ -147,7 +148,6 @@ class Faculty:
                     f"Member1: {project['Member1']}, Member2: {project['Member2']}, Status: {project['Status']}")
 
     def evaluate_projects(self):
-        # Placeholder logic to evaluate projects
         projects = self.project.table
         if not projects:
             print("No projects available for evaluation.")
@@ -160,6 +160,5 @@ class Faculty:
                 if evaluation.upper() == 'Q':
                     break
                 else:
-                    # Logic to store evaluation, e.g., in a new table or update existing project table
                     print("Evaluation submitted.")
 
