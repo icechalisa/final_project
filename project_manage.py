@@ -39,12 +39,12 @@ def login():
     return None
 
 
-def exit():
-    for i in database.database:
-        with open(i.table_name + '.csv', 'w') as variable:
+def to_exit():
+    for value in database.database:
+        with open(value.table_name + '.csv', 'w') as variable:
             csv_reader = csv.writer(variable)
-            csv_reader.writerow(i.table[0].keys())
-            for data in i.table:
+            csv_reader.writerow(value.table[0].keys())
+            for data in value.table:
                 csv_reader.writerow(data.values())
 
 
@@ -88,4 +88,4 @@ elif val[1] == 'advisor':
 for i in database.database:
     print(i.table_name, i.table)
 # once everyhthing is done, make a call to the exit function
-exit()
+to_exit()

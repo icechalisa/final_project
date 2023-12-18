@@ -51,12 +51,14 @@ class Advisor:
 
     def send_accept_response(self):
         self.advisor_request.update(column='Response', id=self.project_id, value='Accepted')
-        self.advisor_request.update(column='Response_date', id=self.project_id, value=datetime.today().date())
+        self.advisor_request.update(column='Response_date', id=self.project_id,
+                                    value=datetime.today().date())
         print(f"Accepted request for Project ID: {self.project_id}\n")
 
     def send_deny_response(self):
         self.advisor_request.update(column='Response', id=self.project_id, value='Denied')
-        self.advisor_request.update(column='Response_date', id=self.project_id, value=datetime.today().date())
+        self.advisor_request.update(column='Response_date', id=self.project_id,
+                                    value=datetime.today().date())
         print(f"Denied request for Project ID: {self.project_id}\n")
 
     def project_details(self):
@@ -67,9 +69,10 @@ class Advisor:
         else:
             print("Project details:")
             for project in projects:
-                print(
-                    f"ID: {project['ID']}, Title: {project['Title']}, Lead: {project['Lead']}, "
-                    f"Member1: {project['Member1']}, Member2: {project['Member2']}, Status: {project['Status']}")
+                print(f"ID: {project['ID']}, Title: {project['Title']}, "
+                      f"Lead: {project['Lead']}, "
+                      f"Member1: {project['Member1']}, Member2: {project['Member2']}, "
+                      f"Status: {project['Status']}")
 
     def evaluate_projects(self, project_id=None):
         project = self.project.filter(lambda x: x['ID'] == project_id).table[0]
