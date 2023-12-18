@@ -1,4 +1,3 @@
-from database import Database
 from database import Table
 from datetime import datetime
 
@@ -49,7 +48,7 @@ class Student:
         for request in self.member_request.table:
             if self.person_id == request['to_be_member'] and request['Response'] == 'Pending':
                 requests.append(request)
-        if requests == []:
+        if not requests:
             print("***You have no pending requests***")
             print('')
             return
@@ -58,12 +57,13 @@ class Student:
             while True:
                 n = 1
                 for student in requests:
-                    print(f'{n}. Project id:{student["ID"]} ,lead student:{self.check_lead_name(self.check_lead_id(student["ID"]))}')
+                    print(f'{n}. Project id:{student["ID"]} ,'
+                          f'lead student:{self.check_lead_name(self.check_lead_id(student["ID"]))}')
                     n += 1
                 decision = input("Do you want to accept (A) or deny (D) these requests? ").upper()
                 print('(Or enter Q to quit)')
                 if decision == 'A':
-                    if requests == []:
+                    if not requests:
                         print("***You have no pending requests***")
                         print('')
                         return
@@ -74,7 +74,8 @@ class Student:
                             if member['Response'] == 'Pending' and requests[choice - 1]['ID'] == member['ID']:
                                 self.login.update(column='role', id=self.person_id, value='member')
                                 self.member_request.update(column='Response', id=member['ID'], value='Accepted')
-                                self.member_request.update(column='Response_date', id=member['ID'], value=datetime.today().date())
+                                self.member_request.update(column='Response_date', id=member['ID'],
+                                                           value=datetime.today().date())
                                 requests.pop(choice - 1)
                                 print('You have accepted the requests')
                                 break
@@ -84,7 +85,7 @@ class Student:
                         print("Please select your choice again")
                         print('---------------------------------')
                 elif decision == 'D':
-                    if requests == []:
+                    if not requests:
                         print("***You have no pending requests***")
                         print('')
                         return
@@ -94,7 +95,8 @@ class Student:
                         for member in self.member_request.table:
                             if member['Response'] == 'Pending' and requests[choice - 1]['ID'] == member['ID']:
                                 self.member_request.update(column='Response', id=member['ID'], value='Denied')
-                                self.member_request.update(column='Response_date', id=member['ID'], value=datetime.today().date())
+                                self.member_request.update(column='Response_date', id=member['ID'],
+                                                           value=datetime.today().date())
                                 requests.pop(choice - 1)
                                 print('You have denied the requests')
                                 break
@@ -107,7 +109,8 @@ class Student:
         if self.member_request.filter(lambda x: x['to_be_member'] == self.person_id).table[0]['Response'] == 'Pending':
             print('You have to deny the request first')
             print('')
-        elif self.member_request.filter(lambda x: x['to_be_member'] == self.person_id).table[0]['Response'] == 'Accepted':
+        elif self.member_request.filter(lambda x: x['to_be_member'] == self.person_id).table[0]['Response'] \
+                == 'Accepted':
             print('You have accepted the request, Cannot create a project')
             print('')
         elif self.member_request.filter(lambda x: x['to_be_member'] == self.person_id).table[0]['Response'] == 'Denied':
@@ -154,5 +157,3 @@ class Student:
             else:
                 print('Invalid choice. Please enter Y or N')
                 print('--------------------------------')
-
-
