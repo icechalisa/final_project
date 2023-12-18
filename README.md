@@ -52,8 +52,15 @@ Files added
       16. submit_final_project_report : To submit final project report.
   5.faculty.py
     - class Faculty(Do a faculty role)
-    - In a class Faculty, I have - methods:
-      1. Not create yet
+    - In a class Faculty, I have 8 methods:
+      1. check_lead_id : To check a lead id.
+      2. check_lead_name : To check a lead name.
+      3. display_choice : To display a choice for a faculty.
+      4. see_requests : To see requests from lead students.
+      5. send_deny_response : To send deny response to lead students.
+      6. check_pending_request : To check a pending request which lead student sent.
+      7. project_detail : To display a project detail.
+      8. evaluate_projects : To evaluate projects.
   6.advisor.py
     - class Advisor(Do a advisor role)
     - In a class Advisor, I have - methods:
