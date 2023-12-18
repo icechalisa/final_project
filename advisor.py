@@ -67,6 +67,7 @@ class Advisor:
         print(f"Evaluating Project ID: {project_id}... (Placeholder for evaluation logic)\n")
 
     def approve_project(self, project_id):
+        select_approve = input("Do you want to approve this project? (Y/N): ").upper()
         self.project.update(column='Status', id=project_id, value='Approved')
         print(f"Approved Project ID: {project_id}\n")
 
