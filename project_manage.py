@@ -40,19 +40,15 @@ def login():
     return None
 
 
-def exit(f):
-    new_data = []
-    with open(f, mode='w') as variable:
-        x = database.search('persons').table
-        csv_reader = csv.writer(variable)
-        csv_reader.writerow(x[0].keys())
-        for data in x:
-            csv_reader.writerow(data.values())
+def exit():
+    for i in database.database:
+        with open(i.table_name + '.csv', 'w') as variable:
+            csv_reader = csv.writer(variable)
+            csv_reader.writerow(i.table[0].keys())
+            for data in i.table:
+                csv_reader.writerow(data.values())
 
-# here are things to do in this function:
-   # write out all the tables that have been modified to the corresponding csv files
-   # By now, you know how to read in a csv file and transform it into a list of dictionaries. For this project, you also need to know how to do the reverse, i.e., writing out to a csv file given a list of dictionaries. See the link below for a tutorial on how to do this:
-   
+
    # https://www.pythonforbeginners.com/basics/list-of-dictionaries-to-csv-in-python
 
 
@@ -79,17 +75,18 @@ elif val[1] == 'member':
     from member import Member
     member = Member(database, val[0])
     member.display_choice()
-    # see and do member related activities
 elif val[1] == 'lead':
     from lead import LeadStudent
     lead = LeadStudent(database, val[0])
     lead.display_choice()
-    # see and do lead related activities
-# elif val[1] = 'faculty':
-    # see and do faculty related activities
+elif val[1] == 'faculty':
+    from faculty import Faculty
+    faculty = Faculty(database, val[0])
+    faculty.display_choice()
 # elif val[1] = 'advisor':
     # see and do advisor related activities
 for i in database.database:
     print(i.table_name, i.table)
 # once everyhthing is done, make a call to the exit function
-exit('persons.csv')
+exit()
+

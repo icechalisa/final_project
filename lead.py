@@ -153,14 +153,14 @@ class LeadStudent:
                 print('--------------------------------')
 
     def update_information(self):
-        print('New information', self.project.table)
+        print('Old information', self.project.table)
         if self.column in self.project.table[0].keys():
             self.project.update(
                 column=self.column,
                 id=self.id,
                 value=self.value
             )
-            print(self.project.table)
+            print('New information', self.project.table)
             return True
         else:
             print("Column is not exist")
