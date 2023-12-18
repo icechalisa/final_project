@@ -16,6 +16,72 @@ insert method: Insert data into the table.
 update method: Update a specific column in the table for a given ID.
 __str__ method: Provide a string representation of the table.
 
+Student Role (student.py)
+Methods:
+__init__: Initialize the attributes of the class.
+find_project: Find a project ID.
+check_lead_id: Check a lead ID.
+check_lead_name: Check a lead name.
+display_choice: Display a choice for a student.
+check_pending_request: Check pending requests sent by the lead student.
+create_project_and_become_lead: Create a project and become a lead student.
+send_invitations: Send invitations to members.
+
+Member Role (member.py)
+Methods:
+__init__: Initialize the attributes of the class.
+check_status: Check the status of a project.
+check_response: Check responses in member-request.csv.
+display_project: Display project details.
+display_choice: Display a choice for a member.
+display_input: Choose a project to update.
+update_information: Update project information.
+
+Admin Role (admin.py)
+Methods:
+__init__: Initialize the attributes of the class.
+display_choice: Display a choice for an admin to choose CSV files to update information.
+display_input: Choose a column in a CSV file to update.
+
+Lead Role (lead.py)
+Methods:
+__init__: Initialize the attributes of the class.
+find_project: Find a project ID in which the lead student is involved.
+check_member_name: Check a member name.
+check_status: Check the status of a project.
+check_response: Check responses in member-request.csv and advisor-request.csv.
+display_project: Display project details.
+display_choice: Display a choice for a lead student.
+display_input: Choose a project to update.
+update_information: Update project information.
+create_project: Create a project.
+find_members: Find members to invite.
+send_invitations: Send invitations to students.
+add_members_to_project: Add members to a project.
+add_advisors_to_project: Add advisors to a project.
+send_request_to_advisors: Send requests to advisors.
+submit_final_project_report: Submit the final project report.
+
+Faculty Role (faculty.py)
+Methods:
+check_lead_id: Check a lead ID.
+check_lead_name: Check a lead name.
+display_choice: Display a choice for a faculty.
+see_requests: See requests from lead students.
+send_deny_response: Send deny responses to lead students.
+check_pending_request: Check pending requests sent by the lead student.
+project_detail: Display project details.
+evaluate_projects: Evaluate projects.
+Advisor Role (advisor.py)
+Methods:
+display_choice: Display a choice for an advisor.
+see_requests: See requests from lead students.
+send_accept_response: Send accept responses to lead students.
+send_deny_response: Send deny responses to lead students.
+project_detail: Display project details.
+evaluate_projects: Evaluate projects.
+approve_projects: Approve projects.
+
 
 In project_manage.py
 
