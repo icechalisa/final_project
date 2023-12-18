@@ -63,8 +63,14 @@ Files added
       8. evaluate_projects : To evaluate projects.
   6.advisor.py
     - class Advisor(Do a advisor role)
-    - In a class Advisor, I have - methods:
-      1. Not create yet
+    - In a class Advisor, I have 7 methods:
+      1. display_choice : To display a choice for a advisor.
+      2. see_requests : To see requests from lead students.
+      3. send_accept_response : To send accept response to lead students.
+      4. send_deny_response : To send deny response to lead students.
+      5. project_detail : To display a project detail.
+      6. evaluate_projects : To evaluate projects.
+      7. approve_projects : To approve projects.
 
 To run and compile a project, you need to run project_manage.py
 ```commandline
