@@ -83,7 +83,10 @@ elif val[1] == 'faculty':
     from faculty import Faculty
     faculty = Faculty(database, val[0])
     faculty.display_choice()
-elif val[1] = 'advisor':
+elif val[1] == 'advisor':
+    from advisor import Advisor
+    advisor = Advisor(database, val[0])
+    advisor.display_choice()
 for i in database.database:
     print(i.table_name, i.table)
 # once everyhthing is done, make a call to the exit function
