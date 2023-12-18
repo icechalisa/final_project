@@ -5,6 +5,7 @@ from datetime import datetime
 class Advisor:
 
     def __init__(self, database, person_id):
+        self.project_id = None
         self.person_id = person_id
         self.project: Table = database.search('project')
         self.advisor_request: Table = database.search('advisor-request')
@@ -48,15 +49,15 @@ class Advisor:
         else:
             print("No pending requests.\n")
 
-    def send_accept_response(self, project_id):
-        self.advisor_request.update(column='Response', id=project_id, value='Accepted')
-        self.advisor_request.update(column='Response_date', id=project_id, value=datetime.today().date())
-        print(f"Accepted request for Project ID: {project_id}\n")
+    def send_accept_response(self):
+        self.advisor_request.update(column='Response', id=self.project_id, value='Accepted')
+        self.advisor_request.update(column='Response_date', id=self.project_id, value=datetime.today().date())
+        print(f"Accepted request for Project ID: {self.project_id}\n")
 
-    def send_deny_response(self, project_id):
-        self.advisor_request.update(column='Response', id=project_id, value='Denied')
-        self.advisor_request.update(column='Response_date', id=project_id, value=datetime.today().date())
-        print(f"Denied request for Project ID: {project_id}\n")
+    def send_deny_response(self):
+        self.advisor_request.update(column='Response', id=self.project_id, value='Denied')
+        self.advisor_request.update(column='Response_date', id=self.project_id, value=datetime.today().date())
+        print(f"Denied request for Project ID: {self.project_id}\n")
 
     def project_details(self):
         # Logic to see details of all projects
@@ -70,14 +71,7 @@ class Advisor:
                     f"ID: {project['ID']}, Title: {project['Title']}, Lead: {project['Lead']}, "
                     f"Member1: {project['Member1']}, Member2: {project['Member2']}, Status: {project['Status']}")
 
-    def approve_project(self, project_id):
-        for project in self.project.table:
-            if project['ID'] == project_id and project['Status'] == 'Completed':
-                project['Status'] = 'Approved'
-                print(f"Approved Project ID: {project_id}\n")
-                break
-
-    def evaluate_projects(self):
+    def evaluate_projects(self, project_id=None):
         project = self.project.filter(lambda x: x['ID'] == project_id).table[0]
         print(f"Project ID: {project['ID']}, Title: {project['Title']}, Lead: {project['Lead']}, "
               f"Member1: {project['Member1']}, Member2: {project['Member2']}, Status: {project['Status']}")
@@ -92,3 +86,10 @@ class Advisor:
             print(f"Rejected Project ID: {project_id}\n")
         else:
             print("Invalid choice. Try again.")
+
+    def approve_projects(self):
+        for project in self.project.table:
+            if project['ID'] == self.project_id and project['Status'] == 'Completed':
+                project['Status'] = 'Approved'
+                print(f"Approved Project ID: {self.project_id}\n")
+                break
