@@ -60,8 +60,11 @@ Files added
       1. Not create yet
 
 To run and compile a project, you need to run project_manage.py
+```commandline
+python3 project_manage.py
+```
 
-There is a table of contents below for the project.
+`There is a table of contents below for the project.`
 
 | Role             | Action                                                                                                    | Relevant Class | Methods                                                                                                                                                                                                                                                                                   | Completion (%)  |
 |------------------|-----------------------------------------------------------------------------------------------------------|----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------|
