@@ -148,6 +148,7 @@ python3 project_manage.py
 | Advisor | Approve projects                                              | Advisor        | approve_projects               | 100            |
 
 ### Class Database
+(In database.py)
 
 | Action                                  | Relevant Class | Methods   | Completion (%) |
 |-----------------------------------------|----------------|-----------|----------------|
