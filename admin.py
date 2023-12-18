@@ -1,4 +1,3 @@
-from database import Database
 from database import Table
 
 
@@ -130,5 +129,3 @@ class Admin:
         else:
             print("Choice is not exist")
             return False
-
-
