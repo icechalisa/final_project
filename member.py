@@ -4,6 +4,7 @@ from database import Table
 class Member:
 
     def __init__(self, database, _id):
+        self.my_project = None
         self.id_list = None
         self.database = database
         self.column = None
@@ -112,5 +113,3 @@ class Member:
         else:
             print("Column is not exist")
             return False
-
-
