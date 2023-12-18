@@ -35,8 +35,10 @@ class Advisor:
                 break
             else:
                 print("Invalid choice. Try again.")
+
     def see_requests(self):
-        pending_requests = self.advisor_request.filter(lambda x: x['Response'] == 'Pending' and x['to_be_advisor'] == self.person_id).table
+        pending_requests = self.advisor_request.filter(
+            lambda x: x['Response'] == 'Pending' and x['to_be_advisor'] == self.person_id).table
         if pending_requests:
             print("Pending Requests:")
             for request in pending_requests:
@@ -56,18 +58,37 @@ class Advisor:
         self.advisor_request.update(column='Response_date', id=project_id, value=datetime.today().date())
         print(f"Denied request for Project ID: {project_id}\n")
 
-    def see_all_projects(self):
-        print("All Projects:")
-        for project in self.project.table:
-            print(f"Project ID: {project['ID']}, Title: {project['Title']}, Status: {project['Status']}")
-        print('')
-
-    def evaluate_project(self, project_id):
-        # Add your evaluation logic here
-        print(f"Evaluating Project ID: {project_id}... (Placeholder for evaluation logic)\n")
+    def project_details(self):
+        # Logic to see details of all projects
+        projects = self.project.table
+        if not projects:
+            print("No projects available.")
+        else:
+            print("Project details:")
+            for project in projects:
+                print(
+                    f"ID: {project['ID']}, Title: {project['Title']}, Lead: {project['Lead']}, "
+                    f"Member1: {project['Member1']}, Member2: {project['Member2']}, Status: {project['Status']}")
 
     def approve_project(self, project_id):
-        select_approve = input("Do you want to approve this project? (Y/N): ").upper()
-        self.project.update(column='Status', id=project_id, value='Approved')
-        print(f"Approved Project ID: {project_id}\n")
+        for project in self.project.table:
+            if project['ID'] == project_id and project['Status'] == 'Completed':
+                project['Status'] = 'Approved'
+                print(f"Approved Project ID: {project_id}\n")
+                break
 
+    def evaluate_projects(self):
+        project = self.project.filter(lambda x: x['ID'] == project_id).table[0]
+        print(f"Project ID: {project['ID']}, Title: {project['Title']}, Lead: {project['Lead']}, "
+              f"Member1: {project['Member1']}, Member2: {project['Member2']}, Status: {project['Status']}")
+        print("1. Accept")
+        print("2. Reject")
+        choice = int(input("Please enter your choice: "))
+        if choice == 1:
+            self.project.update(column='Status', id=project_id, value='Accepted')
+            print(f"Accepted Project ID: {project_id}\n")
+        elif choice == 2:
+            self.project.update(column='Status', id=project_id, value='Rejected')
+            print(f"Rejected Project ID: {project_id}\n")
+        else:
+            print("Invalid choice. Try again.")
