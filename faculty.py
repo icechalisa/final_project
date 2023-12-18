@@ -10,7 +10,7 @@ class Faculty:
         self.person_id = person_id
         self.project: Table = database.search('project')
         self.advisor_request: Table = database.search('advisor-request')
-        
+
     def check_lead_id(self, id_):
         for lead_id in self.project.table:
             if id_ == lead_id['ID']:
@@ -81,7 +81,7 @@ class Faculty:
         for request in self.advisor_request.table:
             if request['Response'] == 'Pending':
                 requests.append(request)
-        if requests == []:
+        if not requests:
             print("***You have no pending requests***")
             print('')
             return
@@ -96,7 +96,7 @@ class Faculty:
                 decision = input("Do you want to accept (A) or deny (D) these requests? ").upper()
                 print('(Or enter Q to quit)')
                 if decision == 'A':
-                    if requests == []:
+                    if not requests:
                         print("***You have no pending requests***")
                         print('')
                         return
@@ -104,10 +104,13 @@ class Faculty:
                     if 0 < int(choice) <= len(requests):
                         choice = int(choice)
                         for advisor in self.advisor_request.table:
-                            if advisor['Response'] == 'Pending' and requests[choice - 1]['ID'] == advisor['ID']:
+                            if advisor['Response'] == 'Pending' \
+                                    and requests[choice - 1]['ID'] == advisor['ID']:
                                 self.login.update(column='role', id=self.person_id, value='member')
-                                self.advisor_request.update(column='Response', id=advisor['ID'], value='Accepted')
-                                self.advisor_request.update(column='Response_date', id=advisor['ID'], value=datetime.today().date())
+                                self.advisor_request.update(column='Response',
+                                                            id=advisor['ID'], value='Accepted')
+                                self.advisor_request.update(column='Response_date', id=advisor['ID'],
+                                                            value=datetime.today().date())
                                 requests.pop(choice - 1)
                                 print('You have accepted the requests')
                                 break
@@ -117,7 +120,7 @@ class Faculty:
                         print("Please select your choice again")
                         print('---------------------------------')
                 elif decision == 'D':
-                    if requests == []:
+                    if not requests:
                         print("***You have no pending requests***")
                         print('')
                         return
@@ -127,7 +130,8 @@ class Faculty:
                         for advisor in self.advisor_request.table:
                             if advisor['Response'] == 'Pending' and requests[choice - 1]['ID'] == advisor['ID']:
                                 self.advisor_request.update(column='Response', id=advisor['ID'], value='Denied')
-                                self.advisor_request.update(column='Response_date', id=advisor['ID'], value=datetime.today().date())
+                                self.advisor_request.update(column='Response_date', id=advisor['ID'],
+                                                            value=datetime.today().date())
                                 requests.pop(choice - 1)
                                 print('You have denied the requests')
                                 break
@@ -155,10 +159,10 @@ class Faculty:
             print("Evaluate projects:")
             for project in projects:
                 print(
-                    f"ID: {project['ID']}, Title: {project['Title']}, Lead: {project['Lead']}, Status: {project['Status']}")
+                    f"ID: {project['ID']}, Title: {project['Title']}, Lead: {project['Lead']}, "
+                    f"Status: {project['Status']}")
                 evaluation = input("Enter your evaluation for the project (or 'Q' to quit): ")
                 if evaluation.upper() == 'Q':
                     break
                 else:
                     print("Evaluation submitted.")
-
