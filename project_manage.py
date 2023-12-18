@@ -67,9 +67,14 @@ if val[1] == 'admin':
     from admin import Admin
     admin = Admin(database)
     admin.display_choice()
-    #see and do admin related activities
-# elif val[1] = 'student':
-    # see and do student related activities
+elif val[1] == 'student':
+    from student import Student
+    student = Student(database, val[0])
+    role = student.display_choice()
+    if role == 'lead':
+        from lead import LeadStudent
+        lead = LeadStudent(database, val[0])
+        lead.display_choice()
 elif val[1] == 'member':
     from member import Member
     member = Member(database, val[0])

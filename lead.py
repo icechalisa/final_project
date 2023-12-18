@@ -1,6 +1,7 @@
 from database import Table
 from datetime import datetime
 
+
 class LeadStudent:
 
     def __init__(self, database, person_id):
@@ -11,6 +12,7 @@ class LeadStudent:
         self.project: Table = database.search('project')
         self.member_request: Table = database.search('member-request')
         self.advisor_request: Table = database.search('advisor-request')
+        self.login: Table = database.search('login')
 
     def find_project(self):
         name = self.person_id
@@ -18,7 +20,7 @@ class LeadStudent:
             if name == project['Lead']:
                 return project['ID']
 
-    def check_member_name(self,id_):
+    def check_member_name(self, id_):
         for person in self.persons.table:
             if id_ == person['ID']:
                 return person['first'] + ' ' + person['last']
@@ -235,16 +237,25 @@ class LeadStudent:
                 print('')
                 break
             print('(Or enter Q to quit)')
+            print('---------------------')
             if accept == 'A':
-                choice = int(input('Please select your choice: '))
-                if 0 < choice <= len(requests):
+                if requests == []:
+                    print('***You have no response***')
+                    print('')
+                    break
+                choice = input('Please select your choice: ')
+                if 0 < int(choice) <= len(requests):
+                    choice = int(choice)
                     if self.project.filter(lambda x: x['ID'] == project_id).table[0]['Member1'] == '':
                         self.project.update(column='Member1', id=project_id, value=requests[choice - 1]['to_be_member'])
                         print('Your member has been added in member1')
+                        print('')
+                        self.login.update(column='role', id=requests[choice - 1]['to_be_member'], value='member')
                         requests.pop(choice - 1)
                     elif self.project.filter(lambda x: x['ID'] == project_id).table[0]['Member2'] == '':
                         self.project.update(column='Member2', id=project_id, value=requests[choice - 1]['to_be_member'])
                         print('Your member has been added in member2')
+                        print('')
                         requests.pop(choice - 1)
                     else:
                         print('Project is already full. Cannot accept the invitation.')
@@ -253,8 +264,16 @@ class LeadStudent:
                 else:
                     print('Please choose your member again')
             elif accept == 'D':
-                choice = int(input('Please select your choice: '))
-                if 0 < choice <= len(requests):
+                if requests == []:
+                    print('***You have no response***')
+                    print('')
+                    break
+                choice = input('Please select your choice: ')
+                if 0 < int(choice) <= len(requests):
+                    choice = int(choice)
+                    self.member_request.update(column='Response', id=requests[choice - 1]['ID'], value='Denied')
+                    self.member_request.update(column='Response_date', id=requests[choice - 1]['ID'],
+                                               value=datetime.today().date())
                     requests.pop(choice - 1)
                     print('Your member has been denied')
                 break
