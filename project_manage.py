@@ -48,7 +48,7 @@ def exit():
                 csv_reader.writerow(data.values())
 
 
-   # https://www.pythonforbeginners.com/basics/list-of-dictionaries-to-csv-in-python
+# https://www.pythonforbeginners.com/basics/list-of-dictionaries-to-csv-in-python
 
 
 # make calls to the initializing and login functions defined above
@@ -56,7 +56,6 @@ def exit():
 initializing()
 val = login()
 print(val)
-# based on the return value for login, activate the code that performs activities according to the role defined for that person_id
 
 if val[1] == 'admin':
     from admin import Admin
@@ -90,5 +89,3 @@ for i in database.database:
     print(i.table_name, i.table)
 # once everyhthing is done, make a call to the exit function
 exit()
-
-
