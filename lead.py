@@ -5,6 +5,10 @@ from datetime import datetime
 class LeadStudent:
 
     def __init__(self, database, person_id):
+        self.value = None
+        self.column = None
+        self.id = None
+        self.my_project = None
         self.potential_members = None
         self.id_list = None
         self.person_id = person_id
@@ -91,15 +95,15 @@ class LeadStudent:
                 print('')
             elif choice == 4:
                 print('-----All requests-----')
-                mem_response_list,advi_response_list = self.check_response()
+                mem_response_list, advi_response_list = self.check_response()
                 if mem_response_list == [] and advi_response_list == []:
                     print('You have no response')
                 else:
                     for request in mem_response_list:
-                        print('Your member request has response: ID.',request['ID'] + ' ' + request['Response'] + ' '
+                        print('Your member request has response: ID.', request['ID'] + ' ' + request['Response'] + ' '
                               + request['Response_date'])
                     for request in advi_response_list:
-                        print('Your advisor request has response: ID.',request['ID'] + ' ' + request['Response'] + ' '
+                        print('Your advisor request has response: ID.', request['ID'] + ' ' + request['Response'] + ' '
                               + request['Response_date'])
                 print('')
             elif choice == 5:
@@ -222,7 +226,7 @@ class LeadStudent:
         for request in self.member_request.table:
             if project_id == request['ID'] and request['Response'] == 'Accepted':
                 requests.append(request)
-        if requests == []:
+        if not requests:
             print('***You have no response***')
             print('')
             return
@@ -232,14 +236,14 @@ class LeadStudent:
                 print(f'{n}. ID: {student["ID"]} {self.check_member_name(student["to_be_member"])}')
                 n += 1
             accept = input('Do you want to accept (A) or deny (D) these requests? ').upper()
-            if requests == []:
+            if not requests:
                 print('***You have no response***')
                 print('')
                 break
             print('(Or enter Q to quit)')
             print('---------------------')
             if accept == 'A':
-                if requests == []:
+                if not requests:
                     print('***You have no response***')
                     print('')
                     break
@@ -264,7 +268,7 @@ class LeadStudent:
                 else:
                     print('Please choose your member again')
             elif accept == 'D':
-                if requests == []:
+                if not requests:
                     print('***You have no response***')
                     print('')
                     break
@@ -287,7 +291,7 @@ class LeadStudent:
         for request in self.advisor_request.table:
             if project_id == request['ID'] and request['Response'] == 'Accepted':
                 requests.append(request)
-        if requests == []:
+        if not requests:
             print('***You have no response***')
             print('')
             return
@@ -297,7 +301,7 @@ class LeadStudent:
                 print(f'{n}. ID: {faculty["ID"]} {self.check_member_name(faculty["to_be_member"])}')
                 n += 1
             accept = input('Do you want to accept (A) or deny (D) these requests? ').upper()
-            if requests == []:
+            if not requests:
                 print('***You have no response***')
                 print('')
                 break
@@ -306,7 +310,8 @@ class LeadStudent:
                 choice = int(input('Please select your choice: '))
                 if 0 < choice <= len(requests):
                     if self.project.filter(lambda x: x['ID'] == project_id).table[0]['Advisor'] == '':
-                        self.project.update(column='Advisor', id=project_id, value=requests[choice - 1]['to_be_advisor'])
+                        self.project.update(column='Advisor', id=project_id, 
+                                            value=requests[choice - 1]['to_be_advisor'])
                         print('Your advisor has been added in a project')
                         requests.pop(choice - 1)
                     else:
@@ -365,7 +370,7 @@ class LeadStudent:
                             print(f'{n} ID:{project["ID"]} {project["Title"]}')
                             n += 1
                             project_complete.append(project)
-                if project_complete == []:
+                if not project_complete:
                     print('You have no project completed')
                     print('')
                     break
@@ -386,5 +391,3 @@ class LeadStudent:
             else:
                 print('Invalid choice. Please enter Y or N')
                 print('--------------------------------')
-
-
